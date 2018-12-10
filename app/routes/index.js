@@ -1,6 +1,7 @@
 var express = require('express');
 var router = express.Router();
 var request = require('../utils/utils');
+var http = require('http');
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
@@ -12,5 +13,12 @@ router.get('/', function(req, res, next) {
     res.json(a);
   });
 });
+
+router.get('/getTodayEvent',function(req,res,next){
+  request.http_get('http://api.juheapi.com','80','/japi/toh','/?v=1&month='+req.query.month+'&day='+ req.query.day +'&key=b0cd572a71f616b066ba189cb5fc3954',function(data){
+    console.log('其他接口取回来的数据 data',data);
+    res.json(data);
+  });
+})
 
 module.exports = router;

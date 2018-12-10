@@ -8,8 +8,11 @@ outPut.http_get = function(ip, port, url, params, callback){
         path : url+params,
         method : "GET",
     };
+    console.log('请求path：',url+params)
     var request = http.request(options,function(res){
         res.on('data',(chunk)=>{
+
+            console.log('外部接口返回值',chunk)
             callback(JSON.parse(chunk));
         });
         res.on('end',()=>{
@@ -21,6 +24,7 @@ outPut.http_get = function(ip, port, url, params, callback){
 };
 outPut.http_post = function(ip,port,url,reqData,callback){
     const postData = querystring.stringify(reqData);
+    console.log('ip,port,url,reqData',ip,port,url,reqData)
     const options = {
         hostname: ip,
         port: port,

@@ -38,11 +38,11 @@ export default {
       let date = new Date();
       let day = date.getDay();
       let month = date.getMonth()+1;
-      let api = config.jvheHost+'?v=1&month='+month+'&day='+day+'&key=b0cd572a71f616b066ba189cb5fc3954';
+      let api = config.endHost+'/getTodayEvent/?month='+month+'&day='+day;
       this.$http.get(api).then(function(res){
-        console.log('success',res);
+        console.log('today event success',res);
       },function(err){
-        console.log('err',err)
+        console.log('today event err',err)
       })
     }
   }

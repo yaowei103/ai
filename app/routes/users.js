@@ -1,5 +1,6 @@
 var express = require('express');
 var router = express.Router();
+var utils = require('../utils/utils');
 
 /* GET users listing. */
 router.get('/', function(req, res, next) {
@@ -11,5 +12,9 @@ router.get('/', function(req, res, next) {
     ]
   });
 });
+
+router.get('/getTodayEvent',function(req,res,next){
+  
+})
 
 module.exports = router;
