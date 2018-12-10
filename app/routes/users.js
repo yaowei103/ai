@@ -6,8 +6,8 @@ router.get('/', function(req, res, next) {
   res.json({
     resId:111,
     users:[
-      {name:'John',age:12},
-      {name:'Tom',age:13},
+      {id:11,name:'John',age:12},
+      {id:22,name:'Tom',age:13},
     ]
   });
 });
