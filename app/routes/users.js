@@ -13,8 +13,4 @@ router.get('/', function(req, res, next) {
   });
 });
 
-router.get('/getTodayEvent',function(req,res,next){
-  
-})
-
 module.exports = router;

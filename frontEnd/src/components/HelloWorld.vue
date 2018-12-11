@@ -5,11 +5,18 @@
 
     <button id="getDay" v-on:click="getToday">历史上的今天</button>
     <div style="border:1px solid #333;">
-      <h2>测试后端返回数据的结果</h2>
+      <h4>测试后端返回数据的结果</h4>
       <div class="list" v-for="item in userList" v-bind:key="item.id">
         姓名 {{item.name}}, 年龄：{{item.age}}
       </div>
     </div>
+    <ul class=historyTodayList style="border:2px solid #ff0000">
+      <li v-for="item in historyTodayList" v-bind:key="item._id">
+        <h4 class="title">{{item.title}} &nbsp;{{item.year}}年{{item.month}}月{{item.day}}日（{{item.lunar}}）</h4>
+        <img v-bind:src="item.pic" />
+        <p>{{item.des}}</p>
+      </li>
+    </ul>
   </div>
 </template>
 
@@ -20,14 +27,15 @@ export default {
   data () {
     return {
       msg: 'Welcome',
-      userList : []
+      userList : [],
+      historyTodayList : []
     }
   },
   methods:{
     getData:function(){
       var api = config.endHost+'/?a=1&b=2'
       var that = this;
-      this.$http.get(api).then(function(res){
+      that.$http.get(api).then(function(res){
           console.log('success',res);
           that.userList = res.body.users;
       },function(err){
@@ -35,12 +43,14 @@ export default {
       })
     },
     getToday:function(){
-      let date = new Date();
-      let day = date.getDay();
-      let month = date.getMonth()+1;
-      let api = config.endHost+'/getTodayEvent/?month='+month+'&day='+day;
-      this.$http.get(api).then(function(res){
+      let that = this;
+      let theDate = new Date();
+      let month = theDate.getMonth()+1;
+      let date = theDate.getDate();
+      let api = config.endHost+'/getTodayEvent/?month='+month+'&day='+date;
+      that.$http.get(api).then(function(res){
         console.log('today event success',res);
+        that.historyTodayList = res.body.result;
       },function(err){
         console.log('today event err',err)
       })

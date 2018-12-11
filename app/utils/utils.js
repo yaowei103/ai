@@ -8,15 +8,15 @@ outPut.http_get = function(ip, port, url, params, callback){
         path : url+params,
         method : "GET",
     };
-    console.log('请求path：',url+params)
     var request = http.request(options,function(res){
+        var buffStr = '';
         res.on('data',(chunk)=>{
-
             console.log('外部接口返回值',chunk)
-            callback(JSON.parse(chunk));
+            buffStr+=chunk
         });
         res.on('end',()=>{
-            console.log('响应中已无数据');
+            console.log('get请求响应中已无数据');
+            callback(JSON.parse(buffStr));
         })
     });
     //发送这个请求
@@ -24,7 +24,6 @@ outPut.http_get = function(ip, port, url, params, callback){
 };
 outPut.http_post = function(ip,port,url,reqData,callback){
     const postData = querystring.stringify(reqData);
-    console.log('ip,port,url,reqData',ip,port,url,reqData)
     const options = {
         hostname: ip,
         port: port,
@@ -40,11 +39,13 @@ outPut.http_post = function(ip,port,url,reqData,callback){
         console.log(`状态码: ${res.statusCode}`);
         console.log(`响应头: ${JSON.stringify(res.headers)}`);
         res.setEncoding('utf8');
+        var buffStr = ''
         res.on('data', (chunk) => {
-            callback(chunk);
+            buffStr+=chunk;
         });
         res.on('end', () => {
-            console.log('响应中已无数据');
+            console.log('post请求响应中已无数据');
+            callback(JSON.parse(buffStr))
         });
     });
     

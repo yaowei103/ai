@@ -15,7 +15,7 @@ router.get('/', function(req, res, next) {
 });
 
 router.get('/getTodayEvent',function(req,res,next){
-  request.http_get('http://api.juheapi.com','80','/japi/toh','/?v=1&month='+req.query.month+'&day='+ req.query.day +'&key=b0cd572a71f616b066ba189cb5fc3954',function(data){
+  request.http_get('api.juheapi.com','','/japi/toh','?v=1&key=b0cd572a71f616b066ba189cb5fc3954&month='+req.query.month+'&day='+ req.query.day,function(data){
     console.log('其他接口取回来的数据 data',data);
     res.json(data);
   });
