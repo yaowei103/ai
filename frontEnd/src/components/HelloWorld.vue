@@ -1,22 +1,32 @@
 <template>
   <div class="hello">
     <h1>{{ msg }}</h1>
-    <button id="getData" v-on:click="getData">测试后端转发请求</button>
+    <div class="buttons">
+      <button id="getData" v-on:click="getData">测试后端转发请求</button>
+      <button id="getDay" v-on:click="getToday">历史上的今天</button>
+    </div>
 
-    <button id="getDay" v-on:click="getToday">历史上的今天</button>
+    <form action="/clientImg" method="post" style="border:1px solid blue">
+      <input type="file" name="img" @change="changeFile"/>
+      <button type="submit" v-on:click="postImg">提交来识别图片</button>
+    </form>
+
     <div style="border:1px solid #333;">
       <h4>测试后端返回数据的结果</h4>
       <div class="list" v-for="item in userList" v-bind:key="item.id">
         姓名 {{item.name}}, 年龄：{{item.age}}
       </div>
     </div>
-    <ul class=historyTodayList style="border:2px solid #ff0000">
-      <li v-for="item in historyTodayList" v-bind:key="item._id">
-        <h4 class="title">{{item.title}} &nbsp;{{item.year}}年{{item.month}}月{{item.day}}日（{{item.lunar}}）</h4>
-        <img v-bind:src="item.pic" />
-        <p>{{item.des}}</p>
-      </li>
-    </ul>
+    <div class="historyToday">
+      <h3>历史上的今天</h3>
+      <ul class=historyTodayList style="border:2px solid #ff0000">
+        <li v-for="item in historyTodayList" v-bind:key="item._id">
+          <h4 class="title">{{item.title}} &nbsp;{{item.year}}年{{item.month}}月{{item.day}}日（{{item.lunar}}）</h4>
+          <img v-bind:src="item.pic" />
+          <p>{{item.des}}</p>
+        </li>
+      </ul>
+    </div>
   </div>
 </template>
 
@@ -28,7 +38,9 @@ export default {
     return {
       msg: 'Welcome',
       userList : [],
-      historyTodayList : []
+      historyTodayList : [],
+      avatar: '',
+      file: '',
     }
   },
   methods:{
@@ -53,6 +65,38 @@ export default {
         that.historyTodayList = res.body.result;
       },function(err){
         console.log('today event err',err)
+      })
+    },
+    //选择了文件
+    changeFile: function(e){
+        let file = e.target.files[0];
+        if(file) {
+            this.file = file
+            console.log(this.file)
+            let reader = new FileReader()
+            let that = this
+            reader.readAsDataURL(file)
+            reader.onload= function(e){
+                // 这里的this 指向reader
+                that.avatar = this.result
+            }
+        }
+    },
+    //提交图片用于检测
+    postImg:function(e){
+      var that = this;
+      e.preventDefault();
+      let fileData = {};
+      fileData = this.file
+      console.log('fileData', typeof fileData, fileData)
+      let data = new FormData()
+      data.append('multfile', fileData);
+      that.$http.post(config.endHost+'/clientImg',data,{header:{"Content-Type":"multipart/form-data"}}).then(function(res){
+        console.log(res);
+      },function(err){
+        console.log(err);
+      }).catch(function(err){
+        console.log('upload catch err',err)
       })
     }
   }
