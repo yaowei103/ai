@@ -16,6 +16,5 @@ yarn-error.log*
 
 /app/node_modules
 /frontEnd/node_modules
-/frontEnd/build
 
 /app/upload
