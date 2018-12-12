@@ -3,6 +3,7 @@ var fs = require('fs');
 var router = express.Router();
 var request = require('../utils/utils');
 var multer  = require('multer');
+var baiduAiImg = require('../utils/baiduAiImg');
 
 
 var upload = multer({dest: 'upload_tmp/'});
@@ -26,23 +27,47 @@ router.get('/getTodayEvent',function(req,res,next){
 
 //接受上传的文件
 router.post('/clientImg', upload.any(),function(req,res,next){
-  console.log('get file upload,host',req.hostname);
   var des_file = "./upload/" + req.files[0].originalname;
-  fs.readFile( req.files[0].path, function (err, data) {
-      fs.writeFile(des_file, data, function (err) {
-          if( err ){
-              console.log( err );
-          }else{
-            response = {
-                message:'File uploaded successfully',
-                filename:req.files[0].originalname,
-                src:''
-            };
-            console.log( response );
-            res.end( JSON.stringify( response ) );
-          }
-      });
+  var base64Str = '';
+  var imgSize = 0
+  // fs.statAsync(req.files[0].path+'/'+req.files[0].originalname,function(err,stats){
+  //   imgSize = stats.size;
+  //   console.log('文件大小in',imgSize);
+  // });
+  // console.log('文件大小out',imgSize);
+  fs.readFile( req.files[0].path, 'base64', function (err, data) {
+      //将文件写入文件夹
+      // fs.writeFile(des_file, data, function (err) {
+      //     if( err ){
+      //         console.log( err );
+      //     }else{
+      //       // console.log('new reader');
+      //       // var reader = new FileReader();
+      //       // reader.readAsDataURL(req.files[0]);
+            
+      //       // reader.onload = function(e){
+      //       //   base64Str = this.result
+      //       // }
+
+      //       // console.log(base64Str);
+      //       res.end(
+      //         JSON.stringify({
+      //             message:'File uploaded successfully',
+      //             filename:req.files[0].originalname,
+      //             src:''
+      //         })
+      //       );
+      //     }
+      // });
+      
+      //给百度ai发请求
+      baiduAiImg(data,function(result){
+        res.end(result);
+      },function(err){
+        console.log('请求百度接口发生错误',err);
+      })
   });
+  
 
   //res.json({code:1,msg:'success'})
 })

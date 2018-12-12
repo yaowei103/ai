@@ -1,17 +1,28 @@
 <template>
   <div class="hello">
     <h1>{{ msg }}</h1>
-    <div class="buttons">
+    <!-- <div class="buttons">
       <button id="getData" v-on:click="getData">测试后端转发请求</button>
       <button id="getDay" v-on:click="getToday">历史上的今天</button>
-    </div>
+    </div> -->
 
     <form action="/clientImg" method="post" style="border:1px solid blue">
       <input type="file" name="img" @change="changeFile"/>
       <button type="submit" v-on:click="postImg">提交来识别图片</button>
+      <div class="showImg">
+        <h3>提交的图片</h3>
+        <div class="imgAndResult">
+          <div class="img">
+            <img v-if="showImg" :src="avatar" style="width:400px;">
+          </div>
+          <ul>
+            <li v-for="item in results" :key="item.score">您的图片{{item.score*100}}% 是{{item.root}}&gt;&gt;{{item.keyword}}</li>
+          </ul>
+        </div>
+      </div>
     </form>
 
-    <div style="border:1px solid #333;">
+    <!-- <div style="border:1px solid #333;">
       <h4>测试后端返回数据的结果</h4>
       <div class="list" v-for="item in userList" v-bind:key="item.id">
         姓名 {{item.name}}, 年龄：{{item.age}}
@@ -26,7 +37,7 @@
           <p>{{item.des}}</p>
         </li>
       </ul>
-    </div>
+    </div> -->
   </div>
 </template>
 
@@ -36,11 +47,13 @@ export default {
   name: 'HelloWorld',
   data () {
     return {
-      msg: 'Welcome',
+      msg: 'Welcome to 百度图片识别',
       userList : [],
       historyTodayList : [],
+      showImg:false,
       avatar: '',
       file: '',
+      results:[]
     }
   },
   methods:{
@@ -79,6 +92,7 @@ export default {
             reader.onload= function(e){
                 // 这里的this 指向reader
                 that.avatar = this.result
+                that.showImg = true;
             }
         }
     },
@@ -93,6 +107,7 @@ export default {
       data.append('multfile', fileData);
       that.$http.post(config.endHost+'/clientImg',data,{header:{"Content-Type":"multipart/form-data"}}).then(function(res){
         console.log(res);
+        that.results = res.body.result;
       },function(err){
         console.log(err);
       }).catch(function(err){
@@ -105,5 +120,11 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-
+.showImg{
+  display:flex;
+  flex-direction:column;
+}
+.imgAndResult{
+  display:flex;
+}
 </style>
