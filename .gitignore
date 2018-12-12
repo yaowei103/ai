@@ -18,3 +18,4 @@ yarn-error.log*
 /frontEnd/node_modules
 
 /app/upload
+/app/upload_tmp
