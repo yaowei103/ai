@@ -1,0 +1,12 @@
+# See https://help.github.com/ignore-files/ for more about ignoring files.
+
+# dependencies
+/app/node_modules
+/frontEnd/node_modules
+/app/upload_tmp/*
+/app/upload/*
+
+# production
+/app/build
+/frontEnd/build
+
